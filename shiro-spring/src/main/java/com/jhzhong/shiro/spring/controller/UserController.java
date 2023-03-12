@@ -1,9 +1,11 @@
 package com.jhzhong.shiro.spring.controller;
 
 import com.jhzhong.shiro.spring.pojo.User;
+import com.jhzhong.shiro.spring.service.IUserService;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @RequestMapping(value = "user")
 public class UserController {
+    @Autowired
+    private IUserService userService;
 
     /**
      * 用户登陆逻辑
@@ -40,6 +44,11 @@ public class UserController {
         return "success";
     }
 
+    @PostMapping(value = "register")
+    public String registerUser(User user){
+        Boolean flag = userService.insertUser(user);
+        return flag  ? "index" : "register";
+    }
     @GetMapping(value = "logout")
     public void logout(){
         Subject subject = SecurityUtils.getSubject();

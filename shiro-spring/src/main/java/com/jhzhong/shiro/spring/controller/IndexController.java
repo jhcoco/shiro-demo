@@ -1,5 +1,7 @@
 package com.jhzhong.shiro.spring.controller;
 
+import org.apache.shiro.authz.annotation.Logical;
+import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
@@ -24,5 +26,11 @@ public class IndexController {
     @GetMapping(value = "toRegisterPage")
     public String toRegisterPage(){
         return "register";
+    }
+
+    @GetMapping(value = "permission")
+    @RequiresRoles(value = "admin",logical = Logical.AND)
+    public String toPermsPage(){
+        return "permission";
     }
 }

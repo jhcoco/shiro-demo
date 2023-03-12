@@ -2,6 +2,7 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mybatis-spring="http://www.springframework.org/schema/context"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd">
     <!--配置自动扫描的包（除Controller）-->
     <context:component-scan base-package="com.jhzhong.shiro.spring">
@@ -37,6 +38,7 @@
     <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
         <property name="basePackage" value="com.jhzhong.shiro.spring.dao"/>
     </bean>
+
     <!-- 引入 shiro 配置-->
     <import resource="classpath*:spring-shiro.xml"/>
 </beans>

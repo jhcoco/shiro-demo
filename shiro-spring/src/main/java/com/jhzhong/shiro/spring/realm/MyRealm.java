@@ -1,7 +1,10 @@
 package com.jhzhong.shiro.spring.realm;
 
 import com.jhzhong.shiro.spring.pojo.User;
+import com.jhzhong.shiro.spring.service.IPermsService;
+import com.jhzhong.shiro.spring.service.IRoleService;
 import com.jhzhong.shiro.spring.service.IUserService;
+import com.jhzhong.shiro.spring.service.impl.UserServiceImpl;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
@@ -13,6 +16,7 @@ import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.util.ByteSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.ContextLoader;
 
 import java.util.Set;
 
@@ -26,19 +30,24 @@ public class MyRealm extends AuthorizingRealm {
 
     @Autowired
     private IUserService userService;
+    @Autowired
+    private IRoleService roleService;
+    @Autowired
+    private IPermsService permsService;
 
     /**
      * 权限认证
+     *
      * @param principalCollection
      * @return
      */
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
         String principal = (String) principalCollection.getPrimaryPrincipal();
         SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
-//        Set<String> roles = userService.queryRolesByLoginName(principal);
-//        Set<String> permissions = userService.queryPermsByLoginName(principal);
-//        info.setRoles(roles);
-//        info.setStringPermissions(permissions);
+        Set<String> roles = roleService.getAllRolesByLoginName(principal);
+        Set<String> permissions = permsService.getAllPermsByLoginName(principal);
+        info.setRoles(roles);
+        info.setStringPermissions(permissions);
         return info;
     }
 
@@ -51,11 +60,10 @@ public class MyRealm extends AuthorizingRealm {
      */
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
         String principal = (String) authenticationToken.getPrincipal();
-        User user = userService.queryUserByLoginName(principal);
+        User user = userService.getUserInfoByLoginName(principal);
         if (user == null) {
             return null;
         }
-        return new SimpleAuthenticationInfo(principal, user.getPassword(), getName());
-//        return new SimpleAuthenticationInfo(principal, user.getPassword(), ByteSource.Util.bytes(user.getSalt()), getName());
+        return new SimpleAuthenticationInfo(principal, user.getPassword(), ByteSource.Util.bytes(user.getSalt()), getName());
     }
 }

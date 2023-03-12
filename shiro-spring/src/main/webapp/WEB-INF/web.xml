@@ -1,15 +1,12 @@
-<!DOCTYPE web-app PUBLIC
- "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
- "http://java.sun.com/dtd/web-app_2_3.dtd" >
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
+         version="4.0">
+  <welcome-file-list>
+    <welcome-file>index.html</welcome-file>
+  </welcome-file-list>
 
-<web-app>
-  <display-name>Archetype Created Web Application</display-name>
-  <!-- 过滤所有请求，识别是否需要安全校验，需要则触发校验
-  触发校验后，会遍历过滤器链（ini 配置中的 urls）
-  会通过 ThreadContext 在当前线程中绑定一个 subject 和 securityManager
-  调用者通过 SecurityUtils.getSubject() 获得 subject
-  项目启动时，初始化 shiro 环境
-  -->
   <filter>
     <filter-name>shiroFilter</filter-name>
     <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
@@ -22,6 +19,16 @@
     <filter-name>shiroFilter</filter-name>
     <url-pattern>/*</url-pattern>
   </filter-mapping>
+
+  <!--  加载 spring-application 配置-->
+  <context-param>
+    <param-name>contextConfigLocation</param-name>
+    <param-value>classpath*:spring-*.xml</param-value>
+  </context-param>
+  <!-- 配置 contextLoaderListener 监听器-->
+  <listener>
+    <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+  </listener>
   <!--  配置过滤器 filter 解决中文乱码-->
   <filter>
     <filter-name>characterEncodingFilter</filter-name>
@@ -48,6 +55,7 @@
   <servlet>
     <servlet-name>dispatcherServlet</servlet-name>
     <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+    <!-- 指定 springmvc 配置文件-->
     <init-param>
       <param-name>contextConfigLocation</param-name>
       <param-value>classpath*:spring-mvc.xml</param-value>

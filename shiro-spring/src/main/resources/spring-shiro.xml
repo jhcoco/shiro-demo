@@ -4,34 +4,40 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
     <!-- 注入自定义 realm-->
     <bean id="myRealm" class="com.jhzhong.shiro.spring.realm.MyRealm">
-<!--        <property name="credentialsMatcher">-->
-<!--            <bean class="org.apache.shiro.authc.credential.HashedCredentialsMatcher">-->
-<!--                <property name="hashAlgorithmName" value="SHA-256"/>-->
-<!--                <property name="storedCredentialsHexEncoded" value="false"/>-->
-<!--                <property name="hashIterations" value="1024"/>-->
-<!--            </bean>-->
-<!--        </property>-->
-
+        <property name="credentialsMatcher">
+            <bean class="org.apache.shiro.authc.credential.HashedCredentialsMatcher">
+                <property name="hashAlgorithmName" value="MD5"/>
+                <property name="storedCredentialsHexEncoded" value="false"/>
+                <property name="hashIterations" value="1024"/>
+            </bean>
+        </property>
     </bean>
     <!-- 声明SecurityManager -->
     <bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
         <property name="realm" ref="myRealm"/>
     </bean>
-    <!-- ⽣产SpringShiroFilter
-    （ 持有shiro的过滤相关规则，可进⾏请求的过滤校验，校验请求是否合法 ）
-    -->
-    <bean id="shiroFilter5" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
-    <property name="securityManager" ref="securityManager"/>
-    <property name="loginUrl" value="/user/login/page"/>
-    <property name="unauthorizedUrl" value="/error.jsp"/>
-    <property name="filterChainDefinitions">
-        <value>
-            /user/query=anon
-            /user/insert=authc,roles["banfu"]
-            /user/update=authc,perms[""student:update""]
-            /order/insert=authc,roles["xuewei"]
-            /user/logout=logout
-        </value>
-    </property>
+    <!-- 配置 shiro 过滤器与过滤器链-->
+    <bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+        <property name="securityManager" ref="securityManager"/>
+        <property name="loginUrl" value="/index"/>
+        <property name="unauthorizedUrl" value="/permission"/>
+<!--        <property name="filterChainDefinitions">-->
+<!--            <value>-->
+<!--                / = anon-->
+<!--                /index = anon-->
+<!--                /user/login = anon-->
+<!--                /user/register = anon-->
+<!--                /toRegisterPage = anon-->
+<!--                /permission = anon-->
+<!--                /user/logout = logout-->
+<!--                /user/details = authc,roles["admin"]-->
+<!--                /** = authc-->
+<!--            </value>-->
+<!--        </property>-->
     </bean>
+    <!-- enable shiro's annotation-->
+    <bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor"/>
+    <bean class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
+       <property name="securityManager" ref="securityManager"/>
+     </bean>
 </beans>
