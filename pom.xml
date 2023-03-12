@@ -8,8 +8,6 @@
         <module>shiro-hello</module>
         <module>shiro-web</module>
         <module>shiro-taglib</module>
-        <module>shiro-realm</module>
-        <module>shiro-spring</module>
     </modules>
     <version>1.0-SNAPSHOT</version>
     <name>shiro-demo Maven Webapp</name>
