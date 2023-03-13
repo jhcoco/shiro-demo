@@ -4,6 +4,9 @@ import com.jhzhong.shiro.spring.pojo.User;
 import com.jhzhong.shiro.spring.service.IUserService;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.authz.annotation.RequiresAuthentication;
+import org.apache.shiro.authz.annotation.RequiresRoles;
+import org.apache.shiro.authz.annotation.RequiresUser;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -56,6 +59,8 @@ public class UserController {
     }
 
     @GetMapping(value = "details")
+    @RequiresAuthentication
+    @RequiresRoles(value = {"admin"})
     public String detailPage(){
         return "details";
     }
